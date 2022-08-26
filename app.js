@@ -4,6 +4,8 @@ const app = express();
 const PORT = 3000;
 // require mongoose
 const mongoose = require("mongoose");
+var encrypt = require('mongoose-encryption');
+
 
 // middlewares
 app.set("view engine", "ejs");
@@ -26,6 +28,11 @@ const userSchema = new mongoose.Schema({
     minLength: 8,
   },
 });
+
+// mongoose enc
+var mysecret = "im rohan sharma";
+userSchema.plugin(encrypt, { secret: mysecret,encryptedFields: ['password'] });
+
 // model
 var User = new mongoose.model("User", userSchema);
 
