@@ -4,7 +4,11 @@ const app = express();
 const PORT = 3000;
 // require mongoose
 const mongoose = require("mongoose");
-var encrypt = require('mongoose-encryption');
+
+// md5
+var md5 = require('md5');
+
+// console.log(md5("helloworld"));
 
 
 // middlewares
@@ -30,8 +34,6 @@ const userSchema = new mongoose.Schema({
 });
 
 // mongoose enc
-var mysecret = "im rohan sharma";
-userSchema.plugin(encrypt, { secret: mysecret,encryptedFields: ['password'] });
 
 // model
 var User = new mongoose.model("User", userSchema);
@@ -52,7 +54,7 @@ app.post("/signup", (req, res) => {
   // create a user
   const user = new User({
     email: req.body.email,
-    password: req.body.password,
+    password: md5(req.body.password),
   });
 
   user.save((err) => {
@@ -72,7 +74,7 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
 
     const email = req.body.email
-    const password = req.body.password
+    const password = md5(req.body.password)
 
     User.find({email:email},(err,foundUser)=>{
         if(!err){
